@@ -13,6 +13,9 @@ public class GlobalController {
 		return "index";
 	}
 	
-	
+	@RequestMapping("/main.do")
+	public String main(){
+		return "main";
+	}
 
 }
