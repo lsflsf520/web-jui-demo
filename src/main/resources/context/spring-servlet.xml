@@ -16,15 +16,21 @@
 
     <mvc:annotation-driven>
        <mvc:message-converters register-defaults="true">  
-        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
-         <property name="prefixJson" value="false"/>  
-         <property name="supportedMediaTypes">  
+        <bean class="org.springframework.http.converter.StringHttpMessageConverter"> 
+            <constructor-arg value="UTF-8" />        
+        </bean>
+        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            <property name="objectMapper">
+                <bean class="com.github.miemiedev.mybatis.paginator.jackson2.PageListJsonMapper" />
+            </property>
+            <property name="prefixJson" value="false"/>  
+            <property name="supportedMediaTypes">  
              <list>  
                <value>application/json</value>  
                <value>text/json</value>  
              </list>  
-          </property>  
-        </bean>  
+            </property> 
+        </bean>
        </mvc:message-converters>
     </mvc:annotation-driven>
     <mvc:resources location="/" mapping="/static/**"/>
@@ -91,6 +97,13 @@
 		<property name="maxInMemorySize" value="2048" />
 	</bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.ujigu.secure.web.filter.PagerInterceptor" />
+        </mvc:interceptor> 
+     </mvc:interceptors>
+
    <!--  <bean id="excludeUrlSet" class="java.util.TreeSet">
 	  <constructor-arg>
 	    <set>
@@ -119,5 +132,5 @@
             </bean>
         </mvc:interceptor>
      </mvc:interceptors> -->
-
+     
 </beans>

@@ -1,0 +1,57 @@
+
+<div class="pageContent">
+	<form method="post" action="/sys/user/dosave.do" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<input type="hidden" name="sid" value="${(data.sid)!}" />
+		<div class="pageFormContent" layoutH="56">
+			<p>
+				<label>姓名：</label>
+				<input name="nick" type="text" value="${(data.nick)!}" class="required"/>
+			</p>
+			<p>
+				<label>年龄：</label>
+				<input type="text" value="${(data.age)!}" name="age" class="digits">
+			</p>
+			<p>
+				<label>性别：</label>
+				<input type="radio" name="sex" ${(((data.sex)!"0") == "1")?string("checked","")} value="1">男
+				<input type="radio" name="sex" ${(((data.sex)!"0") == "2")?string("checked","")} value="2">女
+				<input type="radio" name="sex" ${(((data.sex)!"0") == "0")?string("checked","")} value="0">未知
+			</p>
+			<p>
+				<label>所属地区：</label>
+				<select name="prId" class="required combox">
+				  <option value="" ${(((data.prId)!-1) == -1)?string("selected","")}>请选择省</option>
+				  <option value="1" ${(((data.prId)!-1) == 1)?string("selected","")}>北京</option>
+				  <option value="2" ${(((data.prId)!-1) == 2)?string("selected","")}>湖南</option>
+				</select>
+				<select name="cityId" class="required combox">
+				  <option value="" ${(((data.cityId)!-1) == -1)?string("selected","")}>请选择市</option>
+				  <option value="211" ${(((data.cityId)!-1) == 211)?string("selected","")}>长沙</option>
+				  <option value="212" ${(((data.cityId)!-1) == 212)?string("selected","")}>湘潭</option>
+				</select>
+				<select name="couId" class="required combox">
+				  <option value="" ${(((data.couId)!-1) == -1)?string("selected","")}>请选择县</option>
+				  <option value="2111" ${(((data.couId)!-1) == 2111)?string("selected","")}>芙蓉区</option>
+				  <option value="2112" ${(((data.couId)!-1) == 2112)?string("selected","")}>岳麓区</option>
+				</select>
+			</p>
+			<p>
+				<label>所属公司：</label>
+				<select name="company" class="required combox">
+					<option value="" ${(((data.company)!"") == "")?string("selected","")}>请选择</option>
+					<option value="三星" ${(((data.company)!"") == "三星")?string("selected","")}>三星</option>
+					<option value="云力" ${(((data.company)!"") == "云力")?string("selected","")}>云力</option>
+				</select>
+			</p>
+		</div>
+		<div class="formBar">
+			<ul>
+				<!-- <li><a class="buttonActive" href="javascript:;"><span>保存</span></a></li> -->
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">保存</button></div></div></li>
+				<li>
+					<div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

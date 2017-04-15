@@ -70,7 +70,7 @@
       <appender-ref ref="XN_LOG" />
     </logger>
  
-	<logger name="com.ujigu.secure" level="debug" additivity="false">
+	<logger name="com.samsung.xiaoi" level="debug" additivity="false">
 	  <appender-ref ref="STDOUT" />
 	  <appender-ref ref="SYS_LOG" />
 	</logger>

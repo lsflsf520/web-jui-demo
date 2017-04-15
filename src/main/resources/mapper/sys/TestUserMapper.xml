@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.samsung.xiaoi.sys.dao.TestUserDao" >
+  <resultMap id="BaseResultMap" type="com.samsung.xiaoi.sys.entity.TestUser" >
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="nick" property="nick" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="TINYINT" />
+    <result column="pr_id" property="prId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="cou_id" property="couId" jdbcType="INTEGER" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="BaseColumnList" >
+    sid, nick, age, pr_id, city_id, cou_id, company, status
+  </sql>
+  <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="BaseColumnList" />
+    from test_user
+    where sid = #{sid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPK" parameterType="java.lang.Integer" >
+    delete from test_user
+    where sid = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.samsung.xiaoi.sys.entity.TestUser" >
+    insert into test_user (sid, nick, age, 
+      pr_id, city_id, cou_id, 
+      company, status)
+    values (#{sid,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR}, #{age,jdbcType=TINYINT}, 
+      #{prId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, #{couId,jdbcType=INTEGER}, 
+      #{company,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPK" parameterType="com.samsung.xiaoi.sys.entity.TestUser" >
+    update test_user
+    <set >
+      <if test="nick != null" >
+        nick = #{nick,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=TINYINT},
+      </if>
+      <if test="prId != null" >
+        pr_id = #{prId,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="couId != null" >
+        cou_id = #{couId,jdbcType=INTEGER},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+  <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="sid" parameterType="com.samsung.xiaoi.sys.entity.TestUser" >
+    insert into test_user (sid, nick, age, 
+      pr_id, city_id, cou_id, 
+      company, status)
+    values (#{sid,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR}, #{age,jdbcType=TINYINT}, 
+      #{prId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, #{couId,jdbcType=INTEGER}, 
+      #{company,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into test_user
+		(sid,nick,age,pr_id,city_id,cou_id,company,status)
+	values 
+	<foreach collection="list" item="item" separator="," index="index">
+		(#{item.sid,jdbcType=INTEGER},#{item.nick,jdbcType=VARCHAR},#{item.age,jdbcType=TINYINT},#{item.prId,jdbcType=INTEGER},#{item.cityId,jdbcType=INTEGER},#{item.couId,jdbcType=INTEGER},#{item.company,jdbcType=VARCHAR},#{item.status,jdbcType=TINYINT})
+	</foreach>
+  </insert>
+  <delete id="batchDel" >
+    		delete from test_user
+			where sid in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </delete>
+  <update id="softDel" >
+    		update test_user
+			set ${statusColName} = #{delStatusVal, jdbcType=INTEGER}
+			where sid in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </update>
+  <select id="findAll" resultMap="BaseResultMap" >
+    select
+		<include refid="BaseColumnList"/>
+	from test_user
+	<where>
+		<trim suffixOverrides="and" >
+			<if test="sid != null" >
+				and sid = #{sid,jdbcType=INTEGER}
+			</if>
+			<if test="nick != null" >
+				and nick = #{nick,jdbcType=VARCHAR}
+			</if>
+			<if test="age != null" >
+				and age = #{age,jdbcType=TINYINT}
+			</if>
+			<if test="prId != null" >
+				and pr_id = #{prId,jdbcType=INTEGER}
+			</if>
+			<if test="cityId != null" >
+				and city_id = #{cityId,jdbcType=INTEGER}
+			</if>
+			<if test="couId != null" >
+				and cou_id = #{couId,jdbcType=INTEGER}
+			</if>
+			<if test="company != null" >
+				and company = #{company,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null" >
+				and status = #{status,jdbcType=TINYINT}
+			</if>
+			and status >= 0
+		</trim>
+	</where>
+  </select>
+</mapper>
