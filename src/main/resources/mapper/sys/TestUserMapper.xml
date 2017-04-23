@@ -120,6 +120,20 @@
 			<if test="status != null" >
 				and status = #{status,jdbcType=TINYINT}
 			</if>
+			<if test="queryParam != null">
+			  <!-- <if test="queryParam.startDate != null and queryParam.endDate != null">
+			    and create_time between #{queryParam.startDate, jdbcType=VARCHAR} and #{queryParam.endDate, jdbcType=VARCHAR}
+			  </if> -->
+			  <if test='queryParam.keywords != null and queryParam.keywords != ""'>
+			     and 
+			      (
+			        nick like concat('%',#{queryParam.keywords, jdbcType=VARCHAR}, '%')
+			       or
+			        company like concat('%',#{queryParam.keywords, jdbcType=VARCHAR}, '%')
+			      )
+			  </if>
+			</if>
+			
 			and status >= 0
 		</trim>
 	</where>

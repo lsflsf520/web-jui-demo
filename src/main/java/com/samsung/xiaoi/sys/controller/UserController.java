@@ -6,8 +6,10 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.samsung.xiaoi.common.bean.DwzAjaxModel;
 import com.samsung.xiaoi.sys.entity.TestUser;
 import com.samsung.xiaoi.sys.service.TestUserService;
 
@@ -22,7 +24,9 @@ public class UserController {
 	public ModelAndView list(TestUser user){
 		List<TestUser> userList = testUserService.findByPage(user);
 		
-		return new ModelAndView("sys/user_list", "dataList", userList);
+		ModelAndView mav = new ModelAndView("sys/user_list", "dataList", userList);
+		mav.addObject("queryData", user);
+		return mav;
 	}
 	
 	@RequestMapping("toedit")
@@ -38,24 +42,38 @@ public class UserController {
 	}
 	
 	@RequestMapping("dosave")
-	public String doSave(TestUser user){
-		testUserService.doSave(user);
+	@ResponseBody
+	public DwzAjaxModel doSave(TestUser user){
+		try{
+			String nick = user.getNick();
+			for(int i = 27; i < 200; i++){
+				user.setSid(null);
+				user.setNick(nick + "_" + i);
+				testUserService.doSave(user);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			return DwzAjaxModel.failure();
+		}
 		
-		return "redirect:list.do";
+		return DwzAjaxModel.successNavTab("user-mgr");
+//		return DwzAjaxModel.successRel("user-mgr");
 	}
 	
 	@RequestMapping("softdel")
-	public String softdel(Integer pk){
+	@ResponseBody
+	public DwzAjaxModel softdel(Integer pk){
 		testUserService.softDel(pk);
 		
-		return "redirect:list.do";
+		return DwzAjaxModel.succesForward("/sys/user/list.do");
 	}
 	
 	@RequestMapping("delete")
-	public String delete(Integer pk){
+	@ResponseBody
+	public DwzAjaxModel delete(Integer pk){
 		testUserService.batchDel(pk);
 		
-		return "redirect:list.do";
+		return DwzAjaxModel.successNavTab("user-mgr");
 	}
 	
 }

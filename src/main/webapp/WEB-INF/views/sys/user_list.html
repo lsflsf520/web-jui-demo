@@ -1,9 +1,14 @@
 <form id="pagerForm" method="post" action="/sys/user/list.do">
-	<input type="hidden" name="status" value="">
-	<input type="hidden" name="keywords" value="" />
-	<input type="hidden" name="pageNum" value="1" />
-	<input type="hidden" name="numPerPage" value="" />
+	<input type="hidden" name="pageInfo.page" value="${(dataListPager.page)!0}" />
+	<input type="hidden" name="pageInfo.limit" value="${(dataListPager.limit)!0}" />
 	<input type="hidden" name="orderField" value="" />
+	
+	<input type="hidden" name="queryParam['startDate']" value="2017-04-16" />
+	<input type="hidden" name="queryParam['endDate']" value="2017-04-20" />
+	<input type="hidden" name="prId" value="${(queryData.prId)!}" />
+	<input type="hidden" name="queryParam['status']" value="0">
+	<input type="hidden" name="queryParam['keywords']" value="${(queryData.queryParam.keywords)!}" />
+	
 </form>
 
 
@@ -30,27 +35,24 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					我的客户：<input type="text" name="keyword" />
+					我的客户：<input type="text" name="queryParam['keywords']" value="${(queryData.queryParam.keywords)!}"/>
 				</td>
 				<td>
-					<select class="combox" name="province">
-						<option value="">所有省市</option>
-						<option value="北京">北京</option>
-						<option value="上海">上海</option>
-						<option value="天津">天津</option>
-						<option value="重庆">重庆</option>
-						<option value="广东">广东</option>
+					<select class="combox" name="prId">
+						<option value="" ${(((queryData.prId)!-1) == -1)?string("selected","")}>所有省市</option>
+				        <option value="1" ${(((queryData.prId)!-1) == 1)?string("selected","")}>北京</option>
+				        <option value="2" ${(((queryData.prId)!-1) == 2)?string("selected","")}>湖南</option>
 					</select>
 				</td>
-				<td>
+				<!-- <td>
 					建档日期：<input type="text" class="date" readonly="true" />
-				</td>
+				</td> -->
 			</tr>
 		</table>
 		<div class="subBar">
 			<ul>
 				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
-				<li><a class="button" href="demo_page6.html" target="dialog" mask="true" title="查询框"><span>高级检索</span></a></li>
+				<!-- <li><a class="button" href="demo_page6.html" target="dialog" mask="true" title="查询框"><span>高级检索</span></a></li> -->
 			</ul>
 		</div>
 	</div>
@@ -63,7 +65,12 @@
 			<li><a class="delete" href="/sys/user/softdel.do?pk={sid}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
 			<li><a class="edit" href="/sys/user/toedit.do?pk={sid}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
-			<li><a class="icon" href="demo/common/dwz-team.xls" target="dwzExport" targetType="navTab" title="实要导出这些记录吗?"><span>导出EXCEL</span></a></li>
+			<!-- <li><a class="icon" href="demo/common/dwz-team.xls" target="dwzExport" targetType="navTab" title="实要导出这些记录吗?"><span>导出EXCEL</span></a></li> -->
+			<li><a class="icon"  href="javascript:void(0);" onclick="alertMsg.correct('这是成功信息')"><span>成功信息</span></a></li>
+			<li><a class="icon"  href="javascript:void(0);" onclick="alertMsg.info('这是提示信息')"><span>提示信息</span></a></li>
+			<li><a class="icon"  href="javascript:void(0);" onclick="alertMsg.warn('这事警告信息')"><span>警告信息</span></a></li>
+			<li><a class="icon"  href="javascript:void(0);" onclick="alertMsg.error('这事错误信息')"><span>错误信息</span></a></li>
+			<li><a class="icon"  href="javascript:void(0);" onclick="alertMsg.confirm('确定要干这事吗',{okCall:function(){alert('OK button clicked');}})"><span>确认信息</span></a></li>
 		</ul>
 	</div>
 	<table class="table" width="100%" layoutH="138">
@@ -94,10 +101,10 @@
 		<div class="pages">
 			<span>显示</span>
 			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
-				<option value="20">20</option>
-				<option value="50">50</option>
-				<option value="100">100</option>
-				<option value="200">200</option>
+				<option value="30" ${(((dataListPager.limit)!30) == 30)?string("selected","")} >30</option>
+				<option value="50" ${(((dataListPager.limit)!30) == 50)?string("selected","")}>50</option>
+				<option value="100" ${(((dataListPager.limit)!30) == 100)?string("selected","")}>100</option>
+				<option value="200" ${(((dataListPager.limit)!30) == 200)?string("selected","")}>200</option>
 			</select>
 			<span>条，共${(dataListPager.totalCount)!0}条</span>
 		</div>
