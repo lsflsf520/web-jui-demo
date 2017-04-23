@@ -45,12 +45,12 @@ public class UserController {
 	@ResponseBody
 	public DwzAjaxModel doSave(TestUser user){
 		try{
-			String nick = user.getNick();
+			/*String nick = user.getNick();
 			for(int i = 27; i < 200; i++){
 				user.setSid(null);
-				user.setNick(nick + "_" + i);
+				user.setNick(nick + "_" + i);*/
 				testUserService.doSave(user);
-			}
+//			}
 		} catch (Exception e){
 			e.printStackTrace();
 			return DwzAjaxModel.failure();
