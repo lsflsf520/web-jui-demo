@@ -1,11 +1,13 @@
 package com.samsung.xiaoi.sys.service;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.samsung.xiaoi.sys.dao.TestUserDao;
 import com.samsung.xiaoi.sys.entity.TestUser;
 import com.ujigu.secure.db.dao.IBaseDao;
 import com.ujigu.secure.db.service.AbstractBaseService;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 
 @Service
 public class TestUserService extends AbstractBaseService<Integer, TestUser> {

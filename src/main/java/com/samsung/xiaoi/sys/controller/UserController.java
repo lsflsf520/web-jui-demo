@@ -1,6 +1,5 @@
 package com.samsung.xiaoi.sys.controller;
 
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.samsung.xiaoi.common.bean.DwzAjaxModel;
 import com.samsung.xiaoi.sys.entity.TestUser;
 import com.samsung.xiaoi.sys.service.TestUserService;
+import com.ujigu.secure.db.bean.PageData;
 
 @Controller
 @RequestMapping("/sys/user")
@@ -22,7 +22,7 @@ public class UserController {
 	
 	@RequestMapping("list")
 	public ModelAndView list(TestUser user){
-		List<TestUser> userList = testUserService.findByPage(user);
+		PageData<TestUser> userList = testUserService.findByPage(user);
 		
 		ModelAndView mav = new ModelAndView("sys/user_list", "dataList", userList);
 		mav.addObject("queryData", user);

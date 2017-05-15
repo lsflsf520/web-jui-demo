@@ -20,9 +20,6 @@
             <constructor-arg value="UTF-8" />        
         </bean>
         <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-            <property name="objectMapper">
-                <bean class="com.github.miemiedev.mybatis.paginator.jackson2.PageListJsonMapper" />
-            </property>
             <property name="prefixJson" value="false"/>  
             <property name="supportedMediaTypes">  
              <list>  
@@ -96,13 +93,6 @@
 		<property name="maxUploadSize" value="8388608" /><!-- 8M -->
 		<property name="maxInMemorySize" value="2048" />
 	</bean>
-
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <bean class="com.ujigu.secure.web.filter.PagerInterceptor" />
-        </mvc:interceptor> 
-     </mvc:interceptors>
 
    <!--  <bean id="excludeUrlSet" class="java.util.TreeSet">
 	  <constructor-arg>
