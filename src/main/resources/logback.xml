@@ -75,6 +75,11 @@
 	  <appender-ref ref="SYS_LOG" />
 	</logger>
 	
+	<logger name="org.apache.shiro" level="debug" additivity="false">
+	  <appender-ref ref="STDOUT" />
+	  <appender-ref ref="SYS_LOG" />
+	</logger>
+	
 	<!-- root logger -->
 	<root level="ERROR">
 	    <appender-ref ref="STDOUT" />

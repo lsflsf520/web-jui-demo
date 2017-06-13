@@ -2,6 +2,7 @@ package com.samsung.xiaoi.sys.service;
 
 import javax.annotation.Resource;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.samsung.xiaoi.sys.dao.TestUserDao;
@@ -30,5 +31,11 @@ public class TestUserService extends AbstractBaseService<Integer, TestUser> {
         }
         this.update(testUser);
         return testUser.getPK();
+    }
+    
+    @Override
+    @Cacheable(value="common", key="#pk.toString()")
+    public TestUser findById(Integer pk) {
+    	return super.findById(pk);
     }
 }

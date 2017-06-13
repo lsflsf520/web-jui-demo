@@ -9,8 +9,13 @@
 	<artifactId>web-jui-demo</artifactId>
 	<packaging>war</packaging>
 
+	<properties>
+		<shiro.version>1.2.3</shiro.version>
+		<spring-data-redis.version>1.4.0.RELEASE</spring-data-redis.version>
+	</properties>
+
 	<dependencies>
-	    <dependency>
+		<dependency>
 			<groupId>com.ujigu.secure</groupId>
 			<artifactId>common-webutils</artifactId>
 		</dependency>
@@ -30,6 +35,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
+		<dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-test</artifactId>  
+            <scope>test</scope>  
+        </dependency>  
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -56,15 +66,15 @@
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
-		<dependency> 
-            <groupId>commons-codec</groupId> 
-            <artifactId>commons-codec</artifactId> 
-        </dependency> 
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
 
 		<dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-        </dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
@@ -72,26 +82,52 @@
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-		<!--微信公众号
+		<!--微信公众号 <dependency> <groupId>com.github.binarywang</groupId> <artifactId>weixin-java-parent</artifactId> 
+			<version>2.5.0</version> </dependency> -->
+
+		<!-- shiro config start -->
 		<dependency>
-			<groupId>com.github.binarywang</groupId>
-			<artifactId>weixin-java-parent</artifactId>
-			<version>2.5.0</version>
-		</dependency>-->
-		
-		<dependency>
-		  <groupId>org.apache.shiro</groupId>
-		  <artifactId>shiro-core</artifactId>
-		  <version>1.1.0</version>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${shiro.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<!--spring redis as share session -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.6.2.RELEASE</version>
+		</dependency>
+		<!-- Redis Java Driver -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<!-- shiro config end -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 
 
 	<build>
-	   <finalName>web-jui-demo</finalName>
-	   <plugins>
+		<finalName>web-jui-demo</finalName>
+		<plugins>
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
