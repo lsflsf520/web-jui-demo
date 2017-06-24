@@ -3,29 +3,60 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	<bean id="myRealm" class="com.samsung.xiaoi.common.shiro.realm.MyRealm" />
-	<!-- 会话管理器 -->
-	<bean id="sessionManager"
-		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-		<property name="sessionValidationSchedulerEnabled" value="false" />
-		<property name="sessionDAO" ref="sessionDAO" />
-		<property name="globalSessionTimeout" value="60000" />
-	</bean>
-	<bean id="sessionDAO" class="com.samsung.xiaoi.common.shiro.cache.RedisSessionDao" />
 
-	<!-- 安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	    <property name="cacheManager" ref="cacheManager"/>
 		<property name="sessionManager" ref="sessionManager" />
-		<!-- <property name="cacheManager" ref="shiroCacheManager" /> -->
-		<property name="realm" ref="myRealm" />
+		<property name="realm" ref="commonAuthRealm" />
 	</bean>
-	<bean id="shiroFilter" class="com.samsung.xiaoi.common.aop.MyShiroFilterFactoryBean">
+	<bean id="redisSessionDAO" class="com.samsung.xiaoi.common.shiro.cache.RedisSessionDAO">
+	    <constructor-arg name="sessionTimeout" value="${shiro.session.timeout}"/>
+	</bean>
+    <bean id="cacheManager" class="com.samsung.xiaoi.common.shiro.cache.RedisCacheManager">
+        <property name="redisTemplate" ref="redisTemplate"/>
+    </bean>
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="globalSessionTimeout" value="${shiro.session.timeout}"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionDAO" ref="redisSessionDAO"/>
+    </bean>
+	
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean>
+	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="/" />
-		<!-- <property name="successUrl" value="/system/main"/> -->
-		<property name="unauthorizedUrl" value="/" />
+		<property name="loginUrl" value="/shiro/tologin.do" />
+		<property name="successUrl" value="/shiro/loginok.do"/>
+		<property name="unauthorizedUrl" value="/shiro/403.do" />
+		<property name="filters">
+            <map>
+                <!-- <entry key="authc" value-ref="authorizationFilter"/> -->
+                <entry key="authc" value-ref="authenticationFilter"/>
+            </map>
+        </property>
+		<property name="filterChainDefinitions">
+          <value>
+            /admin/** = authc, roles[admin]
+            /docs/** = authc, perms[document:read]
+            /shiro/tologin.do = anon
+            /shiro/dologon.do = anon
+            /test/user.do = perms[user:list]
+            /** = authc
+         </value>
+        </property>
 	</bean>
 
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
+    <!-- <bean id="authorizationFilter" class="com.samsung.xiaoi.common.aop.ShiroAuthorizationFilter"/> -->
+    <bean id="authenticationFilter" class="com.samsung.xiaoi.common.aop.ShiroAuthenticationFilter"/>
+
+    <!-- 开启Shiro注解 
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>  
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">  
+  	  <property name="securityManager" ref="securityManager"/>  
+    </bean> -->
 </beans>

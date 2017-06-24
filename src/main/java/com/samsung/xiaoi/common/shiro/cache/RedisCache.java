@@ -1,176 +1,107 @@
 package com.samsung.xiaoi.common.shiro.cache;
 
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import java.io.ByteArrayInputStream;  
-import java.io.ByteArrayOutputStream;  
-import java.io.IOException;  
-import java.io.ObjectInputStream;  
-import java.io.ObjectOutputStream;  
-  
-import org.springframework.cache.Cache;  
-import org.springframework.cache.support.SimpleValueWrapper;  
-import org.springframework.dao.DataAccessException;  
-import org.springframework.data.redis.connection.RedisConnection;  
-import org.springframework.data.redis.core.RedisCallback;  
-import org.springframework.data.redis.core.RedisTemplate; 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-public class RedisCache implements Cache {
+/**
+ * @Author ouyangan
+ * @Date 2016/10/9/13:55
+ * @Description Cache   redis实现
+ */
+@SuppressWarnings("unchecked")
+public class RedisCache<K, V> implements Cache<K, V>, Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static final String shiro_cache_prefix = "shiro-cache-";
+    public static final String shiro_cache_prefix_keys = "shiro-cache-*";
+    private static final long timeout = 2592000;
+    private transient static Logger log = LoggerFactory.getLogger(RedisCache.class);
 
-	private RedisTemplate<String, Object> redisTemplate;  
-    private String name;  
-  
-    public RedisTemplate<String, Object> getRedisTemplate() {  
-        return redisTemplate;  
-    }  
-  
-    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {  
-        this.redisTemplate = redisTemplate;  
-    }  
-  
-    public void setName(String name) {  
-        this.name = name;  
-    }  
-  
-    @Override  
-    public String getName() {  
-        return this.name;  
-    }  
-  
-    @Override  
-    public Object getNativeCache() {  
-        return this.redisTemplate;  
-    }  
-  
-    @Override  
-    public ValueWrapper get(Object key) {  
-        final String keyf = (String) key;  
-        Object object = null;  
-        object = redisTemplate.execute(new RedisCallback<Object>() {  
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {  
-  
-                byte[] key = keyf.getBytes();  
-                byte[] value = connection.get(key);  
-                if (value == null) {  
-                    return null;  
-                }  
-                return toObject(value);  
-            }  
-        });  
-        return (object != null ? new SimpleValueWrapper(object) : null);  
-    }  
-  
-    @Override  
-    public void put(Object key, Object value) {  
-        final String keyf = (String) key;  
-        final Object valuef = value;  
-        final long liveTime = 86400;  
-  
-        redisTemplate.execute(new RedisCallback<Long>() {  
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {  
-                byte[] keyb = keyf.getBytes();  
-                byte[] valueb = toByteArray(valuef);  
-                connection.set(keyb, valueb);  
-                if (liveTime > 0) {  
-                    connection.expire(keyb, liveTime);  
-                }  
-                return 1L;  
-            }  
-        });  
-    }  
-  
-    /** 
-     * 描述 : <Object转byte[]>. <br> 
-     * <p> 
-     * <使用方法说明> 
-     * </p> 
-     *  
-     * @param obj 
-     * @return 
-     */  
-    private byte[] toByteArray(Object obj) {  
-        byte[] bytes = null;  
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();  
-        try {  
-            ObjectOutputStream oos = new ObjectOutputStream(bos);  
-            oos.writeObject(obj);  
-            oos.flush();  
-            bytes = bos.toByteArray();  
-            oos.close();  
-            bos.close();  
-        } catch (IOException ex) {  
-            ex.printStackTrace();  
-        }  
-        return bytes;  
-    }  
-  
-    /** 
-     * 描述 : <byte[]转Object>. <br> 
-     * <p> 
-     * <使用方法说明> 
-     * </p> 
-     *  
-     * @param bytes 
-     * @return 
-     */  
-    private Object toObject(byte[] bytes) {  
-        Object obj = null;  
-        try {  
-            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);  
-            ObjectInputStream ois = new ObjectInputStream(bis);  
-            obj = ois.readObject();  
-            ois.close();  
-            bis.close();  
-        } catch (IOException ex) {  
-            ex.printStackTrace();  
-        } catch (ClassNotFoundException ex) {  
-            ex.printStackTrace();  
-        }  
-        return obj;  
-    }  
-  
-    @Override  
-    public void evict(Object key) {  
-        final String keyf = (String) key;  
-        redisTemplate.execute(new RedisCallback<Long>() {  
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {  
-                return connection.del(keyf.getBytes());  
-            }  
-        });  
-    }  
-  
-    @Override  
-    public void clear() {  
-        redisTemplate.execute(new RedisCallback<String>() {  
-            public String doInRedis(RedisConnection connection) throws DataAccessException {  
-                connection.flushDb();  
-                return "ok";  
-            }  
-        });  
-    }  
-  
-    @SuppressWarnings("unchecked")  
-    @Override  
-    public <T> T get(Object key, Class<T> type) {  
-        final String keyf = (String) key;  
-        Object object = null;  
-        object = redisTemplate.execute(new RedisCallback<Object>() {  
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {  
-  
-                byte[] key = keyf.getBytes();  
-                byte[] value = connection.get(key);  
-                if (value == null) {  
-                    return null;  
-                }  
-                return toObject(value);  
-            }  
-        });  
-        return (T) object;  
-    }  
-  
-    @Override  
-    public ValueWrapper putIfAbsent(Object key, Object value) {  
-        put(key, value);  
-        return new SimpleValueWrapper(value);  
-    }  
-	
+    private transient RedisTemplate<K, V> redisTemplate;
+
+    public RedisCache(RedisTemplate<K, V> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+
+    public RedisCache() {
+    }
+
+    @Override
+    public V get(K key) throws CacheException {
+        log.debug("根据key:{}从redis获取对象", key);
+        log.debug("redisTemplate : {}", redisTemplate);
+        return redisTemplate.opsForValue().get(shiro_cache_prefix + key);
+    }
+
+    @Override
+    public V put(K key, V value) throws CacheException {
+        log.debug("根据key:{}从redis删除对象", key);
+        redisTemplate.opsForValue().set((K) (shiro_cache_prefix + key), value, timeout, TimeUnit.SECONDS);
+        return value;
+    }
+
+    @Override
+    public V remove(K key) throws CacheException {
+        log.debug("redis cache remove :{}", key.toString());
+        V value = redisTemplate.opsForValue().get(shiro_cache_prefix + key);
+        redisTemplate.delete(key);
+        return value;
+    }
+
+    @Override
+    public void clear() throws CacheException {
+        log.debug("清除redis所有缓存对象");
+        Set<K> keys = redisTemplate.keys((K) shiro_cache_prefix_keys);
+        redisTemplate.delete(keys);
+    }
+
+    @Override
+    public int size() {
+        Set<K> keys = redisTemplate.keys((K) shiro_cache_prefix_keys);
+        log.debug("获取redis缓存对象数量:{}", keys.size());
+        return keys.size();
+    }
+
+    @Override
+    public Set<K> keys() {
+        Set<K> keys = redisTemplate.keys((K)shiro_cache_prefix_keys);
+        log.debug("获取所有缓存对象的key");
+        if (keys.size() == 0) {
+            return Collections.emptySet();
+        }
+        return keys;
+    }
+
+    @Override
+    public Collection<V> values() {
+        Set<K> keys = redisTemplate.keys((K) shiro_cache_prefix_keys);
+        log.debug("获取所有缓存对象的value");
+        if (keys.size() == 0) {
+            return Collections.emptySet();
+        }
+        List<V> vs = redisTemplate.opsForValue().multiGet(keys);
+
+        return Collections.unmodifiableCollection(vs);
+    }
+
+    public RedisTemplate<K, V> getRedisTemplate() {
+        return redisTemplate;
+    }
+
+    public void setRedisTemplate(RedisTemplate<K, V> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 }

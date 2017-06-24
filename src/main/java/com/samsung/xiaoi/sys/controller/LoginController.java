@@ -7,6 +7,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,10 +16,11 @@ import javax.servlet.http.HttpServletRequest;
  * Created by Administrator on 2014/12/18.
  */
 @Controller
+@RequestMapping("shiro")
 public class LoginController {
 
-    @RequestMapping("doshirologin")
-    public String login(HttpServletRequest request,@RequestParam("username") String username,@RequestParam("password") String password){
+    @RequestMapping("dologon")
+    public String login(HttpServletRequest request,@RequestParam("username") String username,@RequestParam("password") String password, RedirectAttributes attr){
         Subject currentUser = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         //token.setRememberMe(true);
@@ -26,20 +29,30 @@ public class LoginController {
             currentUser.login(token);
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg",e.getClass()+",用户名或者密码错误");
-            return "sys/shiro_login_ok";
+            attr.addAttribute("msg",e.getClass()+",用户名或者密码错误");
+            return "redirect:tologin.do";
         }
         if(currentUser.isAuthenticated()){
-            request.setAttribute("msg", "用户名密码正确");
-            return "sys/shiro_login_ok";
+        	attr.addAttribute("msg", "用户名密码正确");
+            return "redirect:loginok.do";
         }else{
-        	request.setAttribute("msg", "认证失败");
-        	return "sys/shiro_login_ok";
+        	attr.addAttribute("msg", "用户名密码正确");
+            return "redirect:tologin.do";
         }
     }
     
     @RequestMapping("tologin")
-    public String tologin(){
-    	return "sys/shiro_login";
+    public ModelAndView tologin(String msg){
+    	return new ModelAndView("sys/shiro_login", "msg", msg);
+    }
+    
+    @RequestMapping("loginok")
+    public ModelAndView loginok(){
+    	return new ModelAndView("sys/shiro_login_ok", "msg", "恭喜您，登录成功");
+    }
+    
+    @RequestMapping("403")
+    public ModelAndView to403(){
+    	return new ModelAndView("sys/403", "msg", "您没有权限");
     }
 }

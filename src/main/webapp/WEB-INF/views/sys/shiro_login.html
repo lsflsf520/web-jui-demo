@@ -7,12 +7,13 @@
 </head>
 
 <body>
-  <form action="doshirologin.do">
+  <form action="/shiro/dologon.do" method="post">
   用户名：<input name="username" type="text" />
   <br >
-  <input type="text" name="password">
+ 密码： <input type="text" name="password">
    <br>
    <input type="submit" value="登录">
  </form>
+ <div>${msg!}</div>
 </body>
 </html>
