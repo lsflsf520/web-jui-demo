@@ -26,11 +26,11 @@ public class RedisSessionDAO extends AbstractSessionDAO {
     private transient RedisTemplate<Serializable, Session> redisTemplate;
     
     public RedisSessionDAO() {
-		this(86400);
+		this(86400000);
 	}
     
-    public RedisSessionDAO(long sessionTimeout) {
-		this.sessionTimeout = sessionTimeout;
+    public RedisSessionDAO(long sessionMilliTimeout) {
+		this.sessionTimeout = sessionMilliTimeout / 1000;
 	}
     
     @Override

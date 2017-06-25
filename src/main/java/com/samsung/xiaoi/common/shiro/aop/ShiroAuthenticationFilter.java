@@ -1,4 +1,4 @@
-package com.samsung.xiaoi.common.aop;
+package com.samsung.xiaoi.common.shiro.aop;
 
 import com.ujigu.secure.common.bean.ResultModel;
 import com.ujigu.secure.common.utils.JsonUtil;

@@ -48,7 +48,7 @@ public class LoginController {
     
     @RequestMapping("loginok")
     public ModelAndView loginok(){
-    	return new ModelAndView("sys/shiro_login_ok", "msg", "恭喜您，登录成功");
+    	return new ModelAndView("sys/shiro_login_ok", "msg", "恭喜您，登录成功001");
     }
     
     @RequestMapping("403")

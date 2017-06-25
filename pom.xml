@@ -135,7 +135,7 @@
 				<!-- <configuration> <jettyXml>jetty.xml,jetty-ssl.xml,jetty-https.xml</jettyXml> 
 					</configuration> -->
 				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<!-- <scanIntervalSeconds>10</scanIntervalSeconds> -->
 					<webApp>
 						<contextPath>/</contextPath>
 					</webApp>

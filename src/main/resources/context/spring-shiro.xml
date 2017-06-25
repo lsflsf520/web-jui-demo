@@ -10,7 +10,7 @@
 		<property name="realm" ref="commonAuthRealm" />
 	</bean>
 	<bean id="redisSessionDAO" class="com.samsung.xiaoi.common.shiro.cache.RedisSessionDAO">
-	    <constructor-arg name="sessionTimeout" value="${shiro.session.timeout}"/>
+	    <constructor-arg name="sessionMilliTimeout" value="${shiro.session.timeout}"/>
 	</bean>
     <bean id="cacheManager" class="com.samsung.xiaoi.common.shiro.cache.RedisCacheManager">
         <property name="redisTemplate" ref="redisTemplate"/>
@@ -51,8 +51,8 @@
 
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
-    <!-- <bean id="authorizationFilter" class="com.samsung.xiaoi.common.aop.ShiroAuthorizationFilter"/> -->
-    <bean id="authenticationFilter" class="com.samsung.xiaoi.common.aop.ShiroAuthenticationFilter"/>
+    <!-- <bean id="authorizationFilter" class="com.samsung.xiaoi.common.shiro.aop.ShiroAuthorizationFilter"/> -->
+    <bean id="authenticationFilter" class="com.samsung.xiaoi.common.shiro.aop.ShiroAuthenticationFilter"/>
 
     <!-- 开启Shiro注解 
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>  
